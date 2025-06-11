@@ -11,6 +11,8 @@ public value class Quantifier internal constructor(public val value: String) {
         public val atMostOne: Quantifier = Quantifier("?")
         public fun exactly(times: Int): Quantifier = Quantifier("{$times}")
         public fun atLeast(times: Int): Quantifier = Quantifier("{$times,}")
+        public fun atLeastLazy(times: Int): Quantifier = Quantifier("{$times,}?")
         public fun inRange(range: IntRange): Quantifier = Quantifier("{${range.first},${range.last}}")
+        public fun inRangeLazy(range: IntRange): Quantifier = Quantifier("{${range.first},${range.last}}?")
     }
 }
