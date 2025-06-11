@@ -21,7 +21,7 @@ internal val escapeMap = mapOf(
 )
 
 internal fun String.escaped(): String {
-    if (all { escapeMap.containsKey(it) }) // no escape needed, fast path
+    if (none { escapeMap.containsKey(it) }) // no escape needed, fast path
         return this
     return buildString {
         for (char in this@escaped) {

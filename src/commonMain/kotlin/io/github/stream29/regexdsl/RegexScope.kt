@@ -40,11 +40,18 @@ public fun RegexScope.matchNonWordBoundary() {
     components += Single("\\B")
 }
 
-public fun RegexScope.match(unescaped: String, quantifier: Quantifier? = null) {
+public fun RegexScope.match(unescaped: Char, quantifier: Quantifier? = null) {
+    components += Single(unescaped.toString().escaped())
     if (quantifier != null)
-        matchIndexedGroup(quantifier) { match(unescaped) }
-    else
-        components += Single(unescaped.escaped())
+        components += Single(quantifier.value)
+}
+
+public fun RegexScope.match(unescaped: String, quantifier: Quantifier? = null) {
+    when {
+        unescaped.length == 1 -> match(unescaped[0], quantifier)
+        quantifier != null -> matchIndexedGroup(quantifier) { match(unescaped) }
+        else -> components += Single(unescaped.escaped())
+    }
 }
 
 public fun RegexScope.match(regexElement: RegexElement, quantifier: Quantifier? = null) {
