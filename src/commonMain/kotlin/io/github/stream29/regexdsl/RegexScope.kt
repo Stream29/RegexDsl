@@ -142,6 +142,62 @@ public inline fun RegexScope.matchNegatedCharacterSet(quantifier: Quantifier? = 
 }
 
 /**
+ * Adds a positive lookahead group to the regular expression.
+ * A lookahead group matches a group of characters only if they are followed by a certain pattern,
+ * without including that pattern in the match result.
+ *
+ * @param block A lambda with [RegexScope] as the receiver that defines the lookahead pattern.
+ */
+public inline fun RegexScope.lookahead(block: RegexScope.() -> Unit) {
+    components += Single("(?=")
+    components += RegexScope().apply(block)
+    components += Single(")")
+}
+
+/**
+ * Adds a negative lookahead group to the regular expression.
+ * A lookahead group matches a group of characters only if they are NOT followed by a certain pattern,
+ * without including that pattern in the match result.
+ *
+ * @param block A lambda with [RegexScope] as the receiver that defines the lookahead pattern.
+ */
+public inline fun RegexScope.lookaheadNegative(block: RegexScope.() -> Unit) {
+    components += Single("(?!")
+    components += RegexScope().apply(block)
+    components += Single(")")
+}
+
+/**
+ * Adds a positive lookbehind group to the regular expression.
+ * A lookbehind group matches a group of characters only if they are preceded by a certain pattern,
+ * without including that pattern in the match result.
+ *
+ * Please mention that variable-length lookbehind may be not supported for some regex engine.
+ *
+ * @param block A lambda with [RegexScope] as the receiver that defines the lookbehind pattern.
+ */
+public inline fun RegexScope.lookbehind(block: RegexScope.() -> Unit) {
+    components += Single("(?<=")
+    components += RegexScope().apply(block)
+    components += Single(")")
+}
+
+/**
+ * Adds a negative lookbehind group to the regular expression.
+ * A lookbehind group matches a group of characters only if they are NOT preceded by a certain pattern,
+ * without including that pattern in the match result.
+ *
+ * Please mention that variable-length lookbehind may be not supported for some regex engine.
+ *
+ * @param block A lambda with [RegexScope] as the receiver that defines the lookbehind pattern.
+*/
+public inline fun RegexScope.lookbehindNegative(block: RegexScope.() -> Unit) {
+    components += Single("(?<!")
+    components += RegexScope().apply(block)
+    components += Single(")")
+}
+
+/**
  * Adds a non-capturing group to the pattern, with an optional quantifier.
  * 
  * A non-capturing group groups the contained elements without creating a capturing group.
