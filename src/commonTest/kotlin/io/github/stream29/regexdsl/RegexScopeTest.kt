@@ -142,4 +142,47 @@ class RegexScopeTest {
         }
         assertEquals("abc(def)ghi", regex.pattern)
     }
+    @Test
+    fun testLookahead() {
+        val regex = buildRegex {
+            match("abc")
+            lookahead {
+                match("def")
+            }
+        }
+        assertEquals("abc(?=def)", regex.pattern)
+    }
+
+    @Test
+    fun testLookaheadNegative() {
+        val regex = buildRegex {
+            match("abc")
+            lookaheadNegative {
+                match("def")
+            }
+        }
+        assertEquals("abc(?!def)", regex.pattern)
+    }
+
+    @Test
+    fun testLookbehind() {
+        val regex = buildRegex {
+            lookbehind {
+                match("abc")
+            }
+            match("def")
+        }
+        assertEquals("(?<=abc)def", regex.pattern)
+    }
+
+    @Test
+    fun testLookbehindNegative() {
+        val regex = buildRegex {
+            lookbehindNegative {
+                match("abc")
+            }
+            match("def")
+        }
+        assertEquals("(?<!abc)def", regex.pattern)
+    }
 }
