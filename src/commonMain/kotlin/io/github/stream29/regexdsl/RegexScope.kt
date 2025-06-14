@@ -11,15 +11,11 @@ import io.github.stream29.regexdsl.RegexElement.Single
  * methods for adding various regex elements to the pattern.
  */
 @RegexDsl
-public class RegexScope : RegexElement {
+public class RegexScope(
+    private val indexProvider: IndexProvider,
+) : RegexElement, IndexProvider by indexProvider {
     @PublishedApi
     internal val components: MutableList<RegexElement> = mutableListOf()
-    private var currentIndex = 0
-    @PublishedApi
-    internal fun nextIndex(): Int {
-        currentIndex++
-        return currentIndex
-    }
 
     override fun appendTo(stringBuilder: StringBuilder) {
         components.forEach { it.appendTo(stringBuilder) }
@@ -151,7 +147,7 @@ public inline fun RegexScope.matchNegatedCharacterSet(quantifier: Quantifier? = 
  */
 public inline fun RegexScope.lookahead(block: RegexScope.() -> Unit) {
     components += Single("(?=")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
 }
 
@@ -164,7 +160,7 @@ public inline fun RegexScope.lookahead(block: RegexScope.() -> Unit) {
  */
 public inline fun RegexScope.lookaheadNegative(block: RegexScope.() -> Unit) {
     components += Single("(?!")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
 }
 
@@ -179,7 +175,7 @@ public inline fun RegexScope.lookaheadNegative(block: RegexScope.() -> Unit) {
  */
 public inline fun RegexScope.lookbehind(block: RegexScope.() -> Unit) {
     components += Single("(?<=")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
 }
 
@@ -194,7 +190,7 @@ public inline fun RegexScope.lookbehind(block: RegexScope.() -> Unit) {
 */
 public inline fun RegexScope.lookbehindNegative(block: RegexScope.() -> Unit) {
     components += Single("(?<!")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
 }
 
@@ -209,7 +205,7 @@ public inline fun RegexScope.lookbehindNegative(block: RegexScope.() -> Unit) {
  */
 public inline fun RegexScope.matchUncapturedGroup(quantifier: Quantifier? = null, block: RegexScope.() -> Unit) {
     components += Single("(?:")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
     if (quantifier != null)
         components += Single(quantifier.value)
@@ -238,7 +234,7 @@ public inline fun RegexScope.matchNamedGroup(
     require(identifierRegex.matches(name)) { "Group name must be a valid identifier: $name" }
     nextIndex()
     components += Single("(?<$name>")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
     if (quantifier != null)
         components += Single(quantifier.value)
@@ -257,9 +253,10 @@ public inline fun RegexScope.matchNamedGroup(
  */
 public inline fun RegexScope.matchIndexedGroup(quantifier: Quantifier? = null, block: RegexScope.() -> Unit): IndexedGroupRef {
     components += Single("(")
-    components += RegexScope().apply(block)
+    components += RegexScope(this).apply(block)
     components += Single(")")
     if (quantifier != null)
         components += Single(quantifier.value)
+    @OptIn(InternalRegexDslApi::class)
     return IndexedGroupRef(nextIndex())
 }

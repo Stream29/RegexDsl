@@ -19,6 +19,6 @@ public inline fun buildRegex(block: RegexScope.() -> Unit): Regex = Regex(buildR
 */
 public inline fun buildRegexString(block: RegexScope.() -> Unit): String {
     val sb = StringBuilder()
-    RegexScope().apply(block).appendTo(sb)
+    RegexScope(IndexProvider.Impl()).apply(block).appendTo(sb)
     return sb.toString()
 }
