@@ -125,6 +125,7 @@ public fun RegexScope.match(regexElement: RegexElement, quantifier: Quantifier? 
  * @param quantifier Optional quantifier to apply to the character set.
  * @param block A lambda with [CharacterSet] as the receiver that defines the character set.
  */
+@Suppress("KDocUnresolvedReference")
 public inline fun RegexScope.matchCharacterSet(quantifier: Quantifier? = null, block: CharacterSet.() -> Unit) {
     match(CharacterSet().apply(block), quantifier)
 }
@@ -172,7 +173,7 @@ public inline fun RegexScope.lookaheadNegative(block: RegexScope.() -> Unit) {
  * A lookbehind group matches a group of characters only if they are preceded by a certain pattern,
  * without including that pattern in the match result.
  *
- * Please mention that variable-length lookbehind may be not supported for some regex engine.
+ * Please mention that variable-length lookbehind may be not supported for some regex engines.
  *
  * @param block A lambda with [RegexScope] as the receiver that defines the lookbehind pattern.
  */
@@ -187,7 +188,7 @@ public inline fun RegexScope.lookbehind(block: RegexScope.() -> Unit) {
  * A lookbehind group matches a group of characters only if they are NOT preceded by a certain pattern,
  * without including that pattern in the match result.
  *
- * Please mention that variable-length lookbehind may be not supported for some regex engine.
+ * Please mention that variable-length lookbehind may be not supported for some regex engines.
  *
  * @param block A lambda with [RegexScope] as the receiver that defines the lookbehind pattern.
 */
